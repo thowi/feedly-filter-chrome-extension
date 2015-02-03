@@ -2,6 +2,9 @@
 // TODO: Re-filter when more rows are loaded.
 // TODO: When switching feeds automatically load all entries.
 
+/**
+ * The UI to filter the items.
+ */
 function Filter(feedly) {
   this.feedly = feedly;
 
@@ -34,20 +37,6 @@ Filter.prototype.onRangeChanged = function() {
 };
 
 
-
-function waitUntil(closure, callback) {
-  var result = closure();
-  if (result) {
-    callback(result);
-  } else {
-    setTimeout(waitUntil.bind(null /* this */, closure, callback), 100);
-  }
-}
-
-
-function compareNumerically(a, b) {
-  return a - b;
-}
 
 
 function injectUi(element, actionBar) {
