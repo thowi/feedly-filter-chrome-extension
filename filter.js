@@ -2,7 +2,9 @@
 // TODO: Re-filter when more rows are loaded.
 // TODO: When switching feeds automatically load all entries.
 
-function Filter() {
+function Filter(feedly) {
+  this.feedly = feedly;
+
   this.element = document.createElement('div');
 
   this.min = document.createElement('span');
@@ -23,16 +25,12 @@ Filter.prototype.setRange = function(min, max) {
   this.range.min = min;
   this.range.max = max;
   this.range.step = (max - min) / 10;
-  this.range.addEventListener('change', this.filterRows.bind(this));
+  this.range.addEventListener('input', this.onRangeChanged.bind(this));
 };
 
 
-Filter.prototype.filterRows = function() {
-  var threshold = this.range.value;
-  getItemRows().forEach(function(row) {
-    var popularity = getPopularityForRow(row);
-    row.style.display = popularity >= threshold ? '' : 'none';
-  });
+Filter.prototype.onRangeChanged = function() {
+  this.feedly.filterRows(this.range.value /* threshold */);
 };
 
 
@@ -47,42 +45,6 @@ function waitUntil(closure, callback) {
 }
 
 
-function getActionBar() {
-  return document.querySelector('.pageActionBar');
-}
-
-
-function getTitleBar() {
-  return document.getElementById('feedlyTitleBar');
-}
-
-
-function getFeedTitle() {
-  return document.querySelector('#feedlyTitleBar .feedTitle');
-}
-
-
-function getItemContainer() {
-  return document.getElementById('section0_column0');
-}
-
-
-function getItemRows() {
-  return Array.prototype.slice.call(getItemContainer().children);
-}
-
-
-function getPopularityForRow(row) {
-  var popularityElement = row.querySelector('.recommendationInfo span');
-  return parseInt(popularityElement.getAttribute('data-engagement'));
-}
-
-
-function getPopularities() {
-  return getItemRows().map(getPopularityForRow).sort(compareNumerically);
-}
-
-
 function compareNumerically(a, b) {
   return a - b;
 }
@@ -93,33 +55,23 @@ function injectUi(element, actionBar) {
 }
 
 
-function onFeedChanged() {
-
-}
-
-
-function onContentLoaded() {
-
-}
-
-
-
 function init() {
-  var filter = new Filter();
-  waitUntil(getFeedTitle, function(titleBar) {
-    var actionBar = getActionBar();
+  var feedly = new Feedly();
+  var filter = new Filter(feedly);
+  waitUntil(feedly.getFeedTitle, function(titleBar) {
+    var actionBar = feedly.getActionBar();
     injectUi(filter.element, actionBar);
 
-    var titleBar = getTitleBar();
+    var titleBar = feedly.getTitleBar();
     // TODO: Add a check that the title actually changed. The event gets fired twice.
     // TODO: Update when more items loaded. DOMSubtreeModified.
     titleBar.addEventListener('DOMSubtreeModified', function() {
-      var titleElement = getFeedTitle();
+      var titleElement = feedly.getFeedTitle();
       if (titleElement) {
         console.log(titleElement.innerText);
-        waitUntil(getItemContainer, function(itemContainer) {
+        waitUntil(feedly.getItemContainer, function(itemContainer) {
           console.log(itemContainer.children.length);
-          var popularities = getPopularities();
+          var popularities = feedly.getPopularities();
           filter.setRange(
               popularities[0] /* min */,
               popularities[popularities.length - 1] /* max */);

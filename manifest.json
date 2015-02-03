@@ -16,14 +16,14 @@
 */
 /*
   "background": {
-    "scripts": ["filter.js"]
+    "scripts": ["feedly.js", "filter.js"]
   },
 */
   "content_scripts": [
     {
       "matches": ["https://feedly.com/*", "https://*.feedly.com/*"],
       "css": ["filter.css"],
-      "js": ["filter.js"],
+      "js": ["feedly.js", "filter.js"],
       "run_at": "document_idle"
     }
   ],
