@@ -1,5 +1,4 @@
 // TODO: Use popularity histogram as the values are not distributed linearly.
-// TODO: Re-filter when more rows are loaded.
 // TODO: When switching feeds automatically load all entries.
 // TODO: Styling.
 // TODO: Cleanup unused stuff. Also in the manifest etc.
@@ -29,24 +28,26 @@ function Filter(feedly) {
 
 
 Filter.prototype.setRange = function(min, max) {
+  var value = this.range.value;
   this.min.innerText = min;
   this.max.innerText = max;
   this.range.min = min;
   this.range.max = max;
   this.range.step = (max - min) / 10;
-  this.range.addEventListener('input', this.onRangeChanged.bind(this));
+  this.range.value = value;
+  this.range.addEventListener('input', this.filterRows.bind(this));
 };
 
 
-Filter.prototype.onRangeChanged = function() {
+Filter.prototype.filterRows = function() {
   this.feedly.filterRows(this.range.value /* threshold */);
 };
 
 
 Filter.prototype.onFeedItemsLoaded = function(event) {
-  console.log('items loaded!');
   var popularities = this.feedly.getPopularities();
   this.setRange(
       popularities[0] /* min */,
       popularities[popularities.length - 1] /* max */);
+  this.filterRows();
 };
