@@ -66,8 +66,15 @@ Feedly.prototype.onFeedChanged = function() {
   this.dispatchEvent(new Event(Feedly.EventType.FEED_CHANGED));
   // Wait until the items are loaded.
   waitUntil(this.getItemContainer.bind(this), function(itemContainer) {
-    // TODO: Update when more items loaded. DOMSubtreeModified.
     this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
+    // Listen for more items to be loaded.
+    // The DOMSubtreeModified is fired many times, so we throttle the callback.
+    var throttle = new Throttle();
+    itemContainer.addEventListener('DOMSubtreeModified', function() {
+      throttle.fire(function() {
+        this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
+      }.bind(this));
+    }.bind(this));
   }.bind(this));
 };
 

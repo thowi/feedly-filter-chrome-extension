@@ -25,6 +25,7 @@
       "css": ["filter.css"],
       "js": [
         "util.js",
+        "throttle.js",
         "eventtargetimpl.js",
         "feedly.js",
         "filter.js",

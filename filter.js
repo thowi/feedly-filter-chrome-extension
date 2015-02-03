@@ -1,6 +1,8 @@
 // TODO: Use popularity histogram as the values are not distributed linearly.
 // TODO: Re-filter when more rows are loaded.
 // TODO: When switching feeds automatically load all entries.
+// TODO: Styling.
+// TODO: Cleanup unused stuff. Also in the manifest etc.
 
 /**
  * The UI to filter the items.
@@ -42,6 +44,7 @@ Filter.prototype.onRangeChanged = function() {
 
 
 Filter.prototype.onFeedItemsLoaded = function(event) {
+  console.log('items loaded!');
   var popularities = this.feedly.getPopularities();
   this.setRange(
       popularities[0] /* min */,
