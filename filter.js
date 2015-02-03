@@ -19,6 +19,10 @@ function Filter(feedly) {
   this.element.appendChild(this.min);
   this.element.appendChild(this.range);
   this.element.appendChild(this.max);
+
+  this.feedly.addEventListener(
+      Feedly.EventType.FEED_ITEMS_LOADED,
+      this.onFeedItemsLoaded.bind(this));
 }
 
 
@@ -37,6 +41,13 @@ Filter.prototype.onRangeChanged = function() {
 };
 
 
+Filter.prototype.onFeedItemsLoaded = function(event) {
+  var popularities = this.feedly.getPopularities();
+  this.setRange(
+      popularities[0] /* min */,
+      popularities[popularities.length - 1] /* max */);
+};
+
 
 
 function injectUi(element, actionBar) {
@@ -50,25 +61,7 @@ function init() {
   waitUntil(feedly.getFeedTitle, function(titleBar) {
     var actionBar = feedly.getActionBar();
     injectUi(filter.element, actionBar);
-
-    var titleBar = feedly.getTitleBar();
-    // TODO: Add a check that the title actually changed. The event gets fired twice.
-    // TODO: Update when more items loaded. DOMSubtreeModified.
-    titleBar.addEventListener('DOMSubtreeModified', function() {
-      var titleElement = feedly.getFeedTitle();
-      if (titleElement) {
-        console.log(titleElement.innerText);
-        waitUntil(feedly.getItemContainer, function(itemContainer) {
-          console.log(itemContainer.children.length);
-          var popularities = feedly.getPopularities();
-          filter.setRange(
-              popularities[0] /* min */,
-              popularities[popularities.length - 1] /* max */);
-        })
-      }
-    });
   });
-
 }
 
 
