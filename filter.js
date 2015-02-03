@@ -47,22 +47,3 @@ Filter.prototype.onFeedItemsLoaded = function(event) {
       popularities[0] /* min */,
       popularities[popularities.length - 1] /* max */);
 };
-
-
-
-function injectUi(element, actionBar) {
-  actionBar.insertBefore(element, actionBar.firstChild);
-}
-
-
-function init() {
-  var feedly = new Feedly();
-  var filter = new Filter(feedly);
-  waitUntil(feedly.getFeedTitle, function(titleBar) {
-    var actionBar = feedly.getActionBar();
-    injectUi(filter.element, actionBar);
-  });
-}
-
-
-init();

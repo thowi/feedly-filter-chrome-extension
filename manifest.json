@@ -23,7 +23,13 @@
     {
       "matches": ["https://feedly.com/*", "https://*.feedly.com/*"],
       "css": ["filter.css"],
-      "js": ["util.js", "eventtargetimpl.js", "feedly.js", "filter.js"],
+      "js": [
+        "util.js",
+        "eventtargetimpl.js",
+        "feedly.js",
+        "filter.js",
+        "main.js"
+      ],
       "run_at": "document_idle"
     }
   ],
