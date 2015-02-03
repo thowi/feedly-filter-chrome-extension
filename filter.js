@@ -1,5 +1,6 @@
 // TODO: Use popularity histogram as the values are not distributed linearly.
 // TODO: Re-filter when more rows are loaded.
+// TODO: When switching feeds automatically load all entries.
 
 function Filter() {
   this.element = document.createElement('div');
