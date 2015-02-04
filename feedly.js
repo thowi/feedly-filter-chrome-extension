@@ -2,13 +2,13 @@
  * Abstraction over the Feedly UI.
  */
 function Feedly() {
-  this.lastTitle = '';
+  this.lastUrl = null;
 
   waitUntil(this.getTitleBar.bind(this), function(titleBar) {
+	  // Use the title bar to detect a change of the selected feed.
     titleBar.addEventListener('DOMSubtreeModified', function() {
-      var titleElement = this.getFeedTitle();
-      if (titleElement && titleElement.innerText != this.lastTitle) {
-        this.lastTitle = titleElement.innerText;
+      if (location.href != this.lastUrl) {
+        this.lastUrl = location.href;
         this.onFeedChanged();
       }
     }.bind(this));
@@ -30,11 +30,6 @@ Feedly.prototype.getActionBar = function() {
 
 Feedly.prototype.getTitleBar = function() {
   return document.getElementById('feedlyTitleBar');
-};
-
-
-Feedly.prototype.getFeedTitle = function() {
-  return document.querySelector('#feedlyTitleBar .feedTitle');
 };
 
 
