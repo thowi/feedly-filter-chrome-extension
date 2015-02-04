@@ -61,15 +61,18 @@ Feedly.prototype.getPopularities = function() {
 
 Feedly.prototype.onFeedChanged = function() {
   // Notify listeners.
+  log('FEED_CHANGED');
   this.dispatchEvent(new Event(Feedly.EventType.FEED_CHANGED));
   // Wait until the items are loaded.
   waitUntil(this.getItemContainer.bind(this), function(itemContainer) {
+	  log('FEED_ITEMS_LOADED');
     this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
     // Listen for more items to be loaded.
     // The DOMSubtreeModified is fired many times, so we throttle the callback.
     var throttle = new Throttle();
     itemContainer.addEventListener('DOMSubtreeModified', function() {
       throttle.fire(function() {
+			  log('FEED_ITEMS_LOADED');
         this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
       }.bind(this));
     }.bind(this));

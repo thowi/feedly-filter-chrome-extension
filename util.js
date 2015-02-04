@@ -1,3 +1,6 @@
+var ENABLE_LOGGING = false;
+
+
 function compareNumerically(a, b) {
   return a - b;
 }
@@ -10,4 +13,9 @@ function waitUntil(closure, callback) {
   } else {
     setTimeout(waitUntil.bind(null /* this */, closure, callback), 100);
   }
+}
+
+
+function log(message) {
+	ENABLE_LOGGING && console.log(message);
 }
