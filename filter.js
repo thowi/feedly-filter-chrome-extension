@@ -28,6 +28,9 @@ function Filter(feedly) {
   this.element.appendChild(this.max);
 
   this.feedly.addEventListener(
+      Feedly.EventType.FEED_CHANGED,
+      this.onFeedChanged.bind(this));
+  this.feedly.addEventListener(
       Feedly.EventType.FEED_ITEMS_LOADED,
       this.onFeedItemsLoaded.bind(this));
 }
@@ -45,6 +48,12 @@ Filter.prototype.setRange = function(min, max) {
 Filter.prototype.filterRows = function() {
 	var threshold =  this.popularities[this.range.value] || 0;
   this.feedly.filterRows(threshold);
+};
+
+
+Filter.prototype.onFeedChanged = function(event) {
+	// Reset filter on feed change.
+	this.range.value = 0;
 };
 
 
