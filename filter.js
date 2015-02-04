@@ -1,7 +1,8 @@
 // TODO: Use popularity histogram as the values are not distributed linearly.
-// TODO: When switching feeds automatically load all entries.
 // TODO: Styling.
+// TODO: When switching feeds automatically load all entries.
 // TODO: Cleanup unused stuff. Also in the manifest etc.
+// TODO: Submit to Chrome Web Store.
 
 /**
  * The UI to filter the items.
