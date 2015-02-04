@@ -55,9 +55,7 @@ Feedly.prototype.getPopularityForRow = function(row) {
 
 
 Feedly.prototype.getPopularities = function() {
-  return this.getItemRows().
-      map(this.getPopularityForRow).
-      sort(compareNumerically);
+  return this.getItemRows().map(this.getPopularityForRow);
 };
 
 

@@ -1,13 +1,14 @@
-// TODO: Use popularity histogram as the values are not distributed linearly.
-// TODO: When switching feeds automatically load all entries.
 // TODO: Styling.
+// TODO: When switching feeds automatically load all entries.
 // TODO: Cleanup unused stuff. Also in the manifest etc.
+// TODO: When the popularity buckets change, use the nearest neighbor bucket.
 
 /**
  * The UI to filter the items.
  */
 function Filter(feedly) {
   this.feedly = feedly;
+  this.popularities = [];
 
   this.element = document.createElement('div');
 
@@ -16,6 +17,11 @@ function Filter(feedly) {
 
   this.range = document.createElement('input');
   this.range.type = 'range';
+  this.range.min = 0;
+  this.range.max = Filter.NUM_POPOLARITY_BUCKETS - 1;
+  this.range.step = 1;
+  this.range.value = 0;
+  this.range.addEventListener('input', this.filterRows.bind(this));
 
   this.element.appendChild(this.min);
   this.element.appendChild(this.range);
@@ -27,27 +33,53 @@ function Filter(feedly) {
 }
 
 
+Filter.NUM_POPOLARITY_BUCKETS = 50;
+
+
 Filter.prototype.setRange = function(min, max) {
-  var value = this.range.value;
   this.min.innerText = min;
   this.max.innerText = max;
-  this.range.min = min;
-  this.range.max = max;
-  this.range.step = (max - min) / 10;
-  this.range.value = value;
-  this.range.addEventListener('input', this.filterRows.bind(this));
 };
 
 
 Filter.prototype.filterRows = function() {
-  this.feedly.filterRows(this.range.value /* threshold */);
+	var threshold =  this.popularities[this.range.value] || 0;
+  this.feedly.filterRows(threshold);
 };
 
 
 Filter.prototype.onFeedItemsLoaded = function(event) {
-  var popularities = this.feedly.getPopularities();
+  var allPopularities = this.feedly.getPopularities();
+  this.popularities = this.getPopularityBuckets(allPopularities);
   this.setRange(
-      popularities[0] /* min */,
-      popularities[popularities.length - 1] /* max */);
+      this.popularities[0] /* min */,
+      this.popularities[this.popularities.length - 1] /* max */);
   this.filterRows();
+};
+
+
+/**
+ * Takes the whole popularity distribution and returns an array of exactly
+ * NUM_POPOLARITY_BUCKETS popularity values. The minimum and maximum popularity is
+ * guaranteed to be included. The values in between are sampled.
+ */
+Filter.prototype.getPopularityBuckets = function(allPopularities) {
+	var numBuckets = Filter.NUM_POPOLARITY_BUCKETS;
+	
+	var unique = [];
+	new Set(allPopularities).forEach(function(value) {
+		unique.push(value);
+	});
+	
+	var sorted = unique.sort(compareNumerically);
+	
+	var result = []
+	result.push(sorted[0]);
+	for (var i = 1; i < numBuckets - 1; i++) {
+		var sampledIndex = Math.round(i / (numBuckets - 2) * (sorted.length - 2));
+		result.push(sorted[sampledIndex]);
+	}
+	result.push(sorted[sorted.length - 1]);
+	
+	return result;
 };
