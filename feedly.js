@@ -2,13 +2,13 @@
  * Abstraction over the Feedly UI.
  */
 function Feedly() {
-  this.lastTitle = '';
+  this.lastUrl = null;
 
   waitUntil(this.getTitleBar.bind(this), function(titleBar) {
+	  // Use the title bar to detect a change of the selected feed.
     titleBar.addEventListener('DOMSubtreeModified', function() {
-      var titleElement = this.getFeedTitle();
-      if (titleElement && titleElement.innerText != this.lastTitle) {
-        this.lastTitle = titleElement.innerText;
+      if (location.href != this.lastUrl) {
+        this.lastUrl = location.href;
         this.onFeedChanged();
       }
     }.bind(this));
@@ -33,11 +33,6 @@ Feedly.prototype.getTitleBar = function() {
 };
 
 
-Feedly.prototype.getFeedTitle = function() {
-  return document.querySelector('#feedlyTitleBar .feedTitle');
-};
-
-
 Feedly.prototype.getItemContainer = function() {
   return document.getElementById('section0_column0');
 };
@@ -55,23 +50,24 @@ Feedly.prototype.getPopularityForRow = function(row) {
 
 
 Feedly.prototype.getPopularities = function() {
-  return this.getItemRows().
-      map(this.getPopularityForRow).
-      sort(compareNumerically);
+  return this.getItemRows().map(this.getPopularityForRow);
 };
 
 
 Feedly.prototype.onFeedChanged = function() {
   // Notify listeners.
+  log('FEED_CHANGED');
   this.dispatchEvent(new Event(Feedly.EventType.FEED_CHANGED));
   // Wait until the items are loaded.
   waitUntil(this.getItemContainer.bind(this), function(itemContainer) {
+	  log('FEED_ITEMS_LOADED');
     this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
     // Listen for more items to be loaded.
     // The DOMSubtreeModified is fired many times, so we throttle the callback.
     var throttle = new Throttle();
     itemContainer.addEventListener('DOMSubtreeModified', function() {
       throttle.fire(function() {
+			  log('FEED_ITEMS_LOADED');
         this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
       }.bind(this));
     }.bind(this));
