@@ -1,8 +1,8 @@
 // TODO: Styling.
 // TODO: Cleanup unused stuff. Also in the manifest etc.
 // TODO: Submit to Chrome Web Store.
-// TODO: When switching feeds automatically load all entries.
 // TODO: When the popularity buckets change, use the nearest neighbor bucket.
+// TODO: Add the slider to the mini-nav at the top which appears when scrolling.
 
 /**
  * The UI to filter the items.
@@ -65,6 +65,12 @@ Filter.prototype.onFeedItemsLoaded = function(event) {
       this.popularities[0] /* min */,
       this.popularities[this.popularities.length - 1] /* max */);
   this.filterRows();
+  if (!this.feedly.isFeedFullyLoaded()) {
+    // This will trigger another call to onFeedItemsLoaded once loaded.
+    this.feedly.loadMoreItems();
+  } else {
+    this.feedly.scrollToTop();
+  }
 };
 
 

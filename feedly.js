@@ -54,6 +54,22 @@ Feedly.prototype.getPopularities = function() {
 };
 
 
+Feedly.prototype.isFeedFullyLoaded = function() {
+  var fullyLoadedElement = document.getElementById('fullyLoadedFollowing');
+  return fullyLoadedElement.style.display == 'block';
+};
+
+
+Feedly.prototype.loadMoreItems = function() {
+  document.body.scrollTop = 1000000;
+};
+
+
+Feedly.prototype.scrollToTop = function() {
+  document.body.scrollTop = 0;
+};
+
+
 Feedly.prototype.onFeedChanged = function() {
   // Notify listeners.
   log('FEED_CHANGED');
