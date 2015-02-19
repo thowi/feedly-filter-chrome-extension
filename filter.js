@@ -1,8 +1,8 @@
 // TODO: Styling.
 // TODO: Cleanup unused stuff. Also in the manifest etc.
+// TODO: Add the slider to the mini-nav at the top which appears when scrolling.
 // TODO: Submit to Chrome Web Store.
 // TODO: When the popularity buckets change, use the nearest neighbor bucket.
-// TODO: Add the slider to the mini-nav at the top which appears when scrolling.
 
 /**
  * The UI to filter the items.
@@ -12,11 +12,10 @@ function Filter(feedly) {
   this.popularities = [];
 
   this.element = document.createElement('div');
-
-  this.min = document.createElement('span');
-  this.max = document.createElement('span');
+  this.element.className = 'feedly-filter';
 
   this.range = document.createElement('input');
+  this.range.className = 'feedly-filter-range';
   this.range.type = 'range';
   this.range.min = 0;
   this.range.max = Filter.NUM_POPOLARITY_BUCKETS - 1;
@@ -24,9 +23,7 @@ function Filter(feedly) {
   this.range.value = 0;
   this.range.addEventListener('input', this.filterRows.bind(this));
 
-  this.element.appendChild(this.min);
   this.element.appendChild(this.range);
-  this.element.appendChild(this.max);
 
   this.feedly.addEventListener(
       Feedly.EventType.FEED_CHANGED,
@@ -38,12 +35,6 @@ function Filter(feedly) {
 
 
 Filter.NUM_POPOLARITY_BUCKETS = 50;
-
-
-Filter.prototype.setRange = function(min, max) {
-  this.min.innerText = min;
-  this.max.innerText = max;
-};
 
 
 Filter.prototype.filterRows = function() {
@@ -61,9 +52,6 @@ Filter.prototype.onFeedChanged = function(event) {
 Filter.prototype.onFeedItemsLoaded = function(event) {
   var allPopularities = this.feedly.getPopularities();
   this.popularities = this.getPopularityBuckets(allPopularities);
-  this.setRange(
-      this.popularities[0] /* min */,
-      this.popularities[this.popularities.length - 1] /* max */);
   this.filterRows();
   if (!this.feedly.isFeedFullyLoaded()) {
     // This will trigger another call to onFeedItemsLoaded once loaded.
