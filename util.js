@@ -1,4 +1,4 @@
-var ENABLE_LOGGING = false;
+var ENABLE_LOGGING = true;
 
 
 function compareNumerically(a, b) {

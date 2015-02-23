@@ -65,6 +65,13 @@ Feedly.prototype.isFeedFullyLoaded = function() {
 };
 
 
+Feedly.prototype.doesContainerHaveEnoughItems = function() {
+  var container = this.getItemContainer();
+  log(container.getBoundingClientRect().bottom + ' > ' + window.innerHeight);
+  return container.getBoundingClientRect().bottom > window.innerHeight;
+};
+
+
 Feedly.prototype.loadMoreItems = function() {
   document.body.scrollTop = 1000000;
 };
