@@ -1,5 +1,9 @@
-var feedly = new Feedly();
-var filter = new Filter(feedly);
-waitUntil(feedly.getActionBar.bind(feedly), function(actionBar) {
+function installFilterIntoActionBar(filter, actionBar) {
   actionBar.insertBefore(filter.element, actionBar.firstChild);
+}
+
+var feedly = new Feedly();
+waitUntil(feedly.getMainActionBar.bind(feedly), function(mainActionBar) {
+  installFilterIntoActionBar(new Filter(feedly), mainActionBar);
+  installFilterIntoActionBar(new Filter(feedly), feedly.getFloatingActionBar());
 });

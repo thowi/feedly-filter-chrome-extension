@@ -1,8 +1,9 @@
-// TODO: Styling.
+// TODO: Synchrinize the two filter sliders.
+// TODO: Only load more items when the screen is not full.
 // TODO: Cleanup unused stuff. Also in the manifest etc.
-// TODO: Add the slider to the mini-nav at the top which appears when scrolling.
 // TODO: Submit to Chrome Web Store.
 // TODO: When the popularity buckets change, use the nearest neighbor bucket.
+// TODO: Fix the memory leaks by un-listening from events.
 
 /**
  * The UI to filter the items.

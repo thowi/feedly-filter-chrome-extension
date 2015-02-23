@@ -23,8 +23,13 @@ Feedly.EventType = {
 };
 
 
-Feedly.prototype.getActionBar = function() {
-  return document.querySelector('.pageActionBar');
+Feedly.prototype.getMainActionBar = function() {
+  return document.querySelector('#feedlyPageHeader .pageActionBar');
+};
+
+
+Feedly.prototype.getFloatingActionBar = function() {
+  return document.querySelector('#floatingBar .pageActionBar');
 };
 
 
