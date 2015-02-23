@@ -27,6 +27,7 @@
         "util.js",
         "throttle.js",
         "eventtargetimpl.js",
+        "model.js",
         "feedly.js",
         "filter.js",
         "main.js"

@@ -1,15 +1,18 @@
-// TODO: Synchrinize the two filter sliders.
 // TODO: Only load more items when the screen is not full.
 // TODO: Cleanup unused stuff. Also in the manifest etc.
 // TODO: Submit to Chrome Web Store.
 // TODO: When the popularity buckets change, use the nearest neighbor bucket.
+// TODO: Consider moving more state (this.popularities) and logic
+//     (getPopularityBuckets, popularityFilter <-> index conversion) into the
+//     model.
 // TODO: Fix the memory leaks by un-listening from events.
 
 /**
  * The UI to filter the items.
  */
-function Filter(feedly) {
+function Filter(feedly, model) {
   this.feedly = feedly;
+  this.model = model;
   this.popularities = [];
 
   this.element = document.createElement('div');
@@ -22,7 +25,7 @@ function Filter(feedly) {
   this.range.max = Filter.NUM_POPOLARITY_BUCKETS - 1;
   this.range.step = 1;
   this.range.value = 0;
-  this.range.addEventListener('input', this.filterRows.bind(this));
+  this.range.addEventListener('input', this.onRangeInput.bind(this));
 
   this.element.appendChild(this.range);
 
@@ -32,21 +35,23 @@ function Filter(feedly) {
   this.feedly.addEventListener(
       Feedly.EventType.FEED_ITEMS_LOADED,
       this.onFeedItemsLoaded.bind(this));
+  Object.observe(this.model, this.onModelChanged.bind(this));
 }
 
 
 Filter.NUM_POPOLARITY_BUCKETS = 50;
 
 
-Filter.prototype.filterRows = function() {
-	var threshold =  this.popularities[this.range.value] || 0;
-  this.feedly.filterRows(threshold);
+Filter.prototype.onRangeInput = function(event) {
+  this.model.popularityFilter =
+      this.range.value / Filter.NUM_POPOLARITY_BUCKETS;
+  this.filterRows();
 };
 
 
 Filter.prototype.onFeedChanged = function(event) {
 	// Reset filter on feed change.
-	this.range.value = 0;
+  this.model.popularityFilter = 0;
 };
 
 
@@ -60,6 +65,20 @@ Filter.prototype.onFeedItemsLoaded = function(event) {
   } else {
     this.feedly.scrollToTop();
   }
+};
+
+
+Filter.prototype.onModelChanged = function() {
+  this.range.value =
+      this.model.popularityFilter * Filter.NUM_POPOLARITY_BUCKETS;
+};
+
+
+Filter.prototype.filterRows = function() {
+  var popularityBucketIndex =
+      Math.round(this.model.popularityFilter * Filter.NUM_POPOLARITY_BUCKETS);
+  var threshold = this.popularities[popularityBucketIndex] || 0;
+  this.feedly.filterRows(threshold);
 };
 
 
