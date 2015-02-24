@@ -1,5 +1,5 @@
-// TODO: Restore the original scroll position after finishing loading items.
 // TODO: Cleanup unused stuff. Also in the manifest etc.
+// TODO: Change icon.
 // TODO: Submit to Chrome Web Store.
 // TODO: When the popularity buckets change, use the nearest neighbor bucket.
 // TODO: Consider moving more state (this.popularities) and logic
@@ -14,7 +14,7 @@ function Filter(feedly, model) {
   this.feedly = feedly;
   this.model = model;
   this.popularities = [];
-  this.lastPositionBeforeLoadingMoreItems = 0;
+  this.lastPositionBeforeLoadingMoreItems = null;
 
   this.element = document.createElement('div');
   this.element.className = 'feedly-filter';
@@ -60,12 +60,12 @@ Filter.prototype.onFeedItemsLoaded = function(event) {
   var allPopularities = this.feedly.getPopularities();
   this.popularities = this.getPopularityBuckets(allPopularities);
   this.filterRows();
-  if (!this.feedly.doesContainerHaveEnoughItems() &&
-      !this.feedly.isFeedFullyLoaded()) {
+  if (this.feedly.shouldLoadMoreItems()) {
+    this.maybeSaveScrollPos();
     // This will trigger another call to onFeedItemsLoaded once loaded.
     this.feedly.loadMoreItems();
   } else {
-    this.feedly.scrollToTop();
+    this.restoreScrollPos();
   }
 };
 
@@ -81,11 +81,26 @@ Filter.prototype.filterRows = function() {
       Math.round(this.model.popularityFilter * Filter.NUM_POPOLARITY_BUCKETS);
   var threshold = this.popularities[popularityBucketIndex] || 0;
   this.feedly.filterRows(threshold);
-  if (!this.feedly.doesContainerHaveEnoughItems() &&
-      !this.feedly.isFeedFullyLoaded()) {
-      // This will trigger a call to onFeedItemsLoaded once loaded.
-      this.feedly.loadMoreItems();
+  if (this.feedly.shouldLoadMoreItems()) {
+    this.maybeSaveScrollPos();
+    // This will trigger a call to onFeedItemsLoaded once loaded.
+    this.feedly.loadMoreItems();
   }
+};
+
+
+Filter.prototype.maybeSaveScrollPos = function() {
+  if (this.lastPositionBeforeLoadingMoreItems == null) {
+    this.lastPositionBeforeLoadingMoreItems = document.body.scrollTop;
+  }
+};
+
+
+Filter.prototype.restoreScrollPos = function() {
+  if (this.lastPositionBeforeLoadingMoreItems != null) {
+    document.body.scrollTop = this.lastPositionBeforeLoadingMoreItems;
+  }
+  this.lastPositionBeforeLoadingMoreItems = null;
 };
 
 
