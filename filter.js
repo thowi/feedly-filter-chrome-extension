@@ -1,4 +1,3 @@
-// TODO: Cleanup unused stuff. Also in the manifest etc.
 // TODO: Change icon.
 // TODO: Submit to Chrome Web Store.
 // TODO: When the popularity buckets change, use the nearest neighbor bucket.

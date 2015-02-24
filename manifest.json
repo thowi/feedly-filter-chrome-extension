@@ -2,23 +2,11 @@
   "name": "Feedly Filter",
   "version": "1.0",
   "manifest_version": 2,
-  "description": "Filter articles in Feedly by likes.",
+  "description": "Filter articles in Feedly by popularity.",
   "permissions": [
     "https://feedly.com/",
     "https://*.feedly.com/"
   ],
-/*
-  "browser_action": {
-    "default_icon": "icon-128.png",
-    "default_title": "Filter by likes",
-    "default_popup": "popup.html"
-  },
-*/
-/*
-  "background": {
-    "scripts": ["feedly.js", "filter.js"]
-  },
-*/
   "content_scripts": [
     {
       "matches": ["https://feedly.com/*", "https://*.feedly.com/*"],
