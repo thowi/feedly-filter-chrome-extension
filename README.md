@@ -1,4 +1,4 @@
 feedly-filter-chrome-extension
 ==============================
 
-A Chrome extension to filter articles in Feedly
+A Chrome extension for Feedly to filter articles by popularity.
