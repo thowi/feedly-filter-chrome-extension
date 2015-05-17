@@ -4,12 +4,19 @@
   "manifest_version": 2,
   "description": "Filter articles in Feedly by popularity.",
   "permissions": [
+    "http://feedly.com/",
+    "http://*.feedly.com/",
     "https://feedly.com/",
     "https://*.feedly.com/"
   ],
   "content_scripts": [
     {
-      "matches": ["https://feedly.com/*", "https://*.feedly.com/*"],
+      "matches": [
+        "http://feedly.com/*",
+        "http://*.feedly.com/*",
+        "https://feedly.com/*",
+        "https://*.feedly.com/*"
+      ],
       "css": ["filter.css"],
       "js": [
         "util.js",
