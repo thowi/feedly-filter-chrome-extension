@@ -1,4 +1,3 @@
-// TODO: Submit to Chrome Web Store.
 // TODO: When the popularity buckets change, use the nearest neighbor bucket.
 // TODO: Consider moving more state (this.popularities) and logic
 //     (getPopularityBuckets, popularityFilter <-> index conversion) into the
@@ -34,7 +33,9 @@ function Filter(feedly, model) {
   this.feedly.addEventListener(
       Feedly.EventType.FEED_ITEMS_LOADED,
       this.onFeedItemsLoaded.bind(this));
-  Object.observe(this.model, this.onModelChanged.bind(this));
+  this.model.addEventListener(
+      Model.EventType.POPULARITY_FILTER_CHANGED,
+      this.onModelChanged.bind(this));
 }
 
 
@@ -42,15 +43,15 @@ Filter.NUM_POPOLARITY_BUCKETS = 50;
 
 
 Filter.prototype.onRangeInput = function(event) {
-  this.model.popularityFilter =
-      this.range.value / Filter.NUM_POPOLARITY_BUCKETS;
+  this.model.setPopularityFilter(
+      this.range.value / Filter.NUM_POPOLARITY_BUCKETS);
   this.filterRows();
 };
 
 
 Filter.prototype.onFeedChanged = function(event) {
 	// Reset filter on feed change.
-  this.model.popularityFilter = 0;
+  this.model.setPopularityFilter(0);
 };
 
 
@@ -70,13 +71,14 @@ Filter.prototype.onFeedItemsLoaded = function(event) {
 
 Filter.prototype.onModelChanged = function() {
   this.range.value =
-      this.model.popularityFilter * Filter.NUM_POPOLARITY_BUCKETS;
+      this.model.getPopularityFilter() * Filter.NUM_POPOLARITY_BUCKETS;
 };
 
 
 Filter.prototype.filterRows = function() {
   var popularityBucketIndex =
-      Math.round(this.model.popularityFilter * Filter.NUM_POPOLARITY_BUCKETS);
+      Math.round(this.model.getPopularityFilter() *
+      Filter.NUM_POPOLARITY_BUCKETS);
   var threshold = this.popularities[popularityBucketIndex] || 0;
   this.feedly.filterRows(threshold);
   if (this.feedly.shouldLoadMoreItems()) {
