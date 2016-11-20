@@ -24,12 +24,22 @@ Feedly.EventType = {
 
 
 Feedly.prototype.getMainActionBar = function() {
-  return document.querySelector('#feedlyPageHeader .pageActionBar');
+  return document.querySelector('#mainBar #feedlyPageHeader .pageActionBar');
+};
+
+
+Feedly.prototype.getMainActionBarFx = function() {
+  return document.querySelector('#mainBarFX #hercule');
 };
 
 
 Feedly.prototype.getFloatingActionBar = function() {
   return document.querySelector('#floatingBar .pageActionBar');
+};
+
+
+Feedly.prototype.getFloatingActionBarFx = function() {
+  return document.querySelector('#headerBarFX .right-col');
 };
 
 
@@ -39,18 +49,21 @@ Feedly.prototype.getTitleBar = function() {
 
 
 Feedly.prototype.getItemContainer = function() {
-  return document.getElementById('section0_column0');
+  return document.querySelector('.list-entries');
 };
 
 
 Feedly.prototype.getItemRows = function() {
-  return Array.prototype.slice.call(this.getItemContainer().children);
+  return Array.prototype.slice.call(
+      document.querySelectorAll('.list-entries > div'));
 };
 
 
 Feedly.prototype.getPopularityForRow = function(row) {
-  var popularityElement = row.querySelector('.recommendationInfo span');
-  return parseInt(popularityElement.getAttribute('data-engagement'));
+  var engagementSpan =
+      row.querySelector('span.engagement,span.nbrRecommendations');
+  return engagementSpan &&
+      parseEngagementCountString(engagementSpan.textContent) || 0;
 };
 
 
@@ -60,14 +73,15 @@ Feedly.prototype.getPopularities = function() {
 
 
 Feedly.prototype.isFeedFullyLoaded = function() {
-  var fullyLoadedElement = document.getElementById('fullyLoadedFollowing');
-  return fullyLoadedElement.style.display == 'block';
+  var container = this.getItemContainer();
+  return container && !!container.querySelector('h4');
 };
 
 
 Feedly.prototype.doesContainerHaveEnoughItems = function() {
   var container = this.getItemContainer();
-  return container.getBoundingClientRect().bottom > window.innerHeight;
+  return container &&
+      container.getBoundingClientRect().bottom > window.innerHeight;
 };
 
 
@@ -83,18 +97,18 @@ Feedly.prototype.loadMoreItems = function() {
 
 Feedly.prototype.onFeedChanged = function() {
   // Notify listeners.
-  log('FEED_CHANGED');
+  log('Feed changed.');
   this.dispatchEvent(new Event(Feedly.EventType.FEED_CHANGED));
   // Wait until the items are loaded.
   waitUntil(this.getItemContainer.bind(this), function(itemContainer) {
-	  log('FEED_ITEMS_LOADED');
+	  log('Feed items loaded.');
     this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
     // Listen for more items to be loaded.
     // The DOMSubtreeModified is fired many times, so we throttle the callback.
     var throttle = new Throttle();
     itemContainer.addEventListener('DOMSubtreeModified', function() {
       throttle.fire(function() {
-			  log('FEED_ITEMS_LOADED');
+			  log('Feed items loaded');
         this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
       }.bind(this));
     }.bind(this));

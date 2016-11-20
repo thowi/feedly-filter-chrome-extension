@@ -5,3 +5,13 @@
 .feedly-filter-range {
   height: 24px;
 }
+
+#headerBarFX .feedly-filter {
+  margin: 7px 10px 0 0;
+}
+
+#searchBarFX .feedly-filter {
+  position: absolute;
+  right: 210px;
+  top: 3px;
+}

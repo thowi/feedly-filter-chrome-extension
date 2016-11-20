@@ -1,4 +1,4 @@
-var ENABLE_LOGGING = false;
+var ENABLE_LOGGING = true;
 
 
 function compareNumerically(a, b) {
@@ -17,5 +17,12 @@ function waitUntil(closure, callback) {
 
 
 function log(message) {
-	ENABLE_LOGGING && console.log(message);
+  var args = Array.from(arguments);
+  args.unshift('Feedly Filter:');
+	ENABLE_LOGGING && console.log.apply(console.log, args);
+}
+
+
+function parseEngagementCountString(countString) {
+  return parseInt(countString.replace('K', '000').replace('M', '000000'));
 }
