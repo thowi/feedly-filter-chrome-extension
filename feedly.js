@@ -24,21 +24,11 @@ Feedly.EventType = {
 
 
 Feedly.prototype.getMainActionBar = function() {
-  return document.querySelector('#mainBar #feedlyPageHeader .pageActionBar');
-};
-
-
-Feedly.prototype.getMainActionBarFx = function() {
   return document.querySelector('#mainBarFX #hercule');
 };
 
 
 Feedly.prototype.getFloatingActionBar = function() {
-  return document.querySelector('#floatingBar .pageActionBar');
-};
-
-
-Feedly.prototype.getFloatingActionBarFx = function() {
   return document.querySelector('#headerBarFX .right-col');
 };
 
