@@ -12,7 +12,7 @@ function Feedly() {
         this.onFeedChanged();
       }
     }.bind(this));
-  }.bind(this));
+  }.bind(this), 'getTitleBar', 10000);
 }
 Feedly.prototype = new EventTargetImpl();
 
@@ -24,7 +24,7 @@ Feedly.EventType = {
 
 
 Feedly.prototype.getMainActionBar = function() {
-  return document.querySelector('#mainBarFX #hercule');
+  return document.querySelector('#mainBarFX .hercule-search');
 };
 
 
@@ -102,7 +102,7 @@ Feedly.prototype.onFeedChanged = function() {
         this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
       }.bind(this));
     }.bind(this));
-  }.bind(this));
+  }.bind(this), 'getItemContainer', 5000);
 };
 
 

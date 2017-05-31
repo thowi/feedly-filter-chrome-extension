@@ -39,7 +39,7 @@ function Filter(feedly, model) {
 }
 
 
-Filter.NUM_POPOLARITY_BUCKETS = 50;
+Filter.NUM_POPOLARITY_BUCKETS = 100;
 
 
 Filter.prototype.onRangeInput = function(event) {

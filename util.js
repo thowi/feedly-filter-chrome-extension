@@ -7,11 +7,24 @@ function compareNumerically(a, b) {
 
 
 function waitUntil(closure, callback) {
+  waitUntil(closure, callback, Number.MAX_VALUE);
+}
+
+
+function waitUntil(closure, callback, timeOutMillis) {
+  waitUntil(closure, callback, '(anonymous wait)', timeOutMillis);
+}
+
+function waitUntil(closure, callback, description, timeOutMillis) {
   var result = closure();
   if (result) {
     callback(result);
+  } else if (timeOutMillis >= 0) {
+    setTimeout(waitUntil.bind(
+        null /* this */, closure, callback, description, timeOutMillis - 100),
+        100);
   } else {
-    setTimeout(waitUntil.bind(null /* this */, closure, callback), 100);
+    log('Timeout for ' + description);
   }
 }
 
