@@ -23,16 +23,6 @@ Feedly.EventType = {
 };
 
 
-Feedly.prototype.getMainActionBar = function() {
-  return document.querySelector('#mainBarFX .hercule-search');
-};
-
-
-Feedly.prototype.getFloatingActionBar = function() {
-  return document.querySelector('#headerBarFX .right-col');
-};
-
-
 Feedly.prototype.getTitleBar = function() {
   return document.getElementById('feedlyTitleBar');
 };

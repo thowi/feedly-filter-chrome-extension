@@ -1,5 +1,9 @@
 .feedly-filter {
   display: inline-block;
+  position: fixed;
+  right: 280px;
+  top: 14px;
+  z-index: 1000;
 }
 
 .feedly-filter-range {
