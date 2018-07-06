@@ -71,7 +71,9 @@ Feedly.prototype.shouldLoadMoreItems = function() {
 
 
 Feedly.prototype.loadMoreItems = function() {
-  document.body.scrollTop = 1000000;
+  log('Trying to load more...');
+  document.documentElement.scrollTop = 0;
+  document.documentElement.scrollTop = 1000000;
 };
 
 
