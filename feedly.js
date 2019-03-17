@@ -35,7 +35,7 @@ Feedly.prototype.getItemContainer = function() {
 
 Feedly.prototype.getItemRows = function() {
   return Array.prototype.slice.call(
-      document.querySelectorAll('.list-entries > div'));
+      document.querySelectorAll('.list-entries .entry'));
 };
 
 
