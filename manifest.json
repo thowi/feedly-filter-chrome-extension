@@ -1,6 +1,6 @@
 {
   "name": "Feedly Filter",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "manifest_version": 2,
   "description": "Filter articles in Feedly by popularity.",
   "permissions": [

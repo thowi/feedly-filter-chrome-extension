@@ -8,6 +8,7 @@ function installFilter() {
   });
   var filter = new Filter(feedly, model);
   document.body.appendChild(filter.element);
+  log('Filter UI installed.')
 }
 
 function onFeedChanged() {

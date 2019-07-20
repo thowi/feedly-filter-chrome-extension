@@ -4,15 +4,15 @@
 function Feedly() {
   this.lastUrl = null;
 
-  waitUntil(this.getTitleBar.bind(this), function(titleBar) {
-	  // Use the title bar to detect a change of the selected feed.
-    titleBar.addEventListener('DOMSubtreeModified', function() {
-      if (location.href != this.lastUrl) {
+  waitUntil(this.getMainContainer.bind(this), function(mainContainer) {
+	  // Use the loading message to detect a change of the selected feed.
+    mainContainer.addEventListener('DOMSubtreeModified', function() {
+      if (!this.getLoadingMessage() && location.href != this.lastUrl) {
         this.lastUrl = location.href;
         this.onFeedChanged();
       }
     }.bind(this));
-  }.bind(this), 'getTitleBar', 10000);
+  }.bind(this), 'getMainContainer', 10000);
 }
 Feedly.prototype = new EventTargetImpl();
 
@@ -20,6 +20,16 @@ Feedly.prototype = new EventTargetImpl();
 Feedly.EventType = {
   FEED_CHANGED: 'feed-changed',
   FEED_ITEMS_LOADED: 'feed-items-loaded'
+};
+
+
+Feedly.prototype.getMainContainer = function() {
+  return document.getElementById('feedlyPageFX');
+};
+
+
+Feedly.prototype.getLoadingMessage = function() {
+  return document.querySelector('#feedlyPageFX .loading');
 };
 
 
@@ -40,15 +50,18 @@ Feedly.prototype.getItemRows = function() {
 
 
 Feedly.prototype.getPopularityForRow = function(row) {
-  var engagementSpan =
-      row.querySelector('span.engagement,span.nbrRecommendations');
+  var engagementSpan = row.querySelector('span.EntryEngagement');
   return engagementSpan &&
       parseEngagementCountString(engagementSpan.textContent) || 0;
 };
 
 
 Feedly.prototype.getPopularities = function() {
-  return this.getItemRows().map(this.getPopularityForRow);
+  var popularities = this.getItemRows().map(this.getPopularityForRow);
+  if (popularities.length > 1 && popularities.filter(x => x != 0).length == 0) {
+    log('Warning: No popularities found. Possibly the DOM query is wrong.');
+  }
+  return popularities;
 };
 
 
