@@ -26,21 +26,21 @@ class Filter {
     this.range.max = Filter.NUM_POPOLARITY_BUCKETS - 1;
     this.range.step = 1;
     this.range.value = 0;
-    this.range.addEventListener('input', this.onRangeInput.bind(this));
+    this.range.addEventListener('input', () => this.onRangeInput());
 
     this.element.appendChild(this.range);
 
     this.feedly.addEventListener(
       Feedly.EventType.FEED_CHANGED,
-      this.onFeedChanged.bind(this)
+      () => this.onFeedChanged()
     );
     this.feedly.addEventListener(
       Feedly.EventType.FEED_ITEMS_LOADED,
-      this.onFeedItemsLoaded.bind(this)
+      () => this.onFeedItemsLoaded()
     );
     this.model.addEventListener(
       Model.EventType.POPULARITY_FILTER_CHANGED,
-      this.onModelChanged.bind(this)
+      () => this.onModelChanged()
     );
   }
 

@@ -6,10 +6,10 @@ class Throttle {
   fire(func) {
     if (!this.running) {
       this.running = true;
-      setTimeout(function() {
+      setTimeout(() => {
         func();
         this.running = false;
-      }.bind(this), 0);
+      }, 0);
     }
   }
 }

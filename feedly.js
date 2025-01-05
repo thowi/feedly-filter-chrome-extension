@@ -12,8 +12,8 @@ class Feedly extends EventTargetImpl {
     this.lastUrl = null;
 
     // Wait until the main container is loaded and a new URL is detected.
-    waitUntil(this.getMainContainer.bind(this), function(mainContainer) {
-      const observer = new MutationObserver(mutationList => {
+    waitUntil(() => this.getMainContainer(), (mainContainer) => {
+      const observer = new MutationObserver((mutationList) => {
         for (const mutation of mutationList) {
           if (!this.getLoadingMessage() && location.href != this.lastUrl) {
             this.lastUrl = location.href;
@@ -22,7 +22,7 @@ class Feedly extends EventTargetImpl {
         }
       });
       observer.observe(mainContainer, { childList: true, subtree: true });
-    }.bind(this), 'getMainContainer', 10000);
+    }, 'getMainContainer', 10000);
   }
 
   getMainContainer() {
@@ -88,7 +88,7 @@ class Feedly extends EventTargetImpl {
     this.dispatchEvent(new Event(Feedly.EventType.FEED_CHANGED));
 
     // Wait until the container and items are loaded.
-    waitUntil(this.getItemContainer.bind(this), function(itemContainer) {
+    waitUntil(() => this.getItemContainer(), (itemContainer) => {
       log('Feed item container loaded.');
       this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
 
@@ -99,15 +99,15 @@ class Feedly extends EventTargetImpl {
         for (const mutation of mutationList) {
           if (Array.from(mutation.addedNodes).find(e => e.nodeName == 'ARTICLE')) {
             // New articles added.
-            throttle.fire(function() {
+            throttle.fire(() => {
               log('More feed items loaded');
               this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
-            }.bind(this));
+            });
           }
         }
       });
       observer.observe(itemContainer, { childList: true, subtree: true });
-    }.bind(this), 'getItemContainer', 5000);
+    }, 'getItemContainer', 5000);
   }
 
   filterRows(threshold) {
