@@ -111,9 +111,9 @@ class Feedly extends EventTargetImpl {
   }
 
   filterRows(threshold) {
-    this.getItemRows().forEach(function(row) {
+    for (row of this.getItemRows()) {
       var popularity = this.getPopularityForRow(row);
       row.style.display = popularity >= threshold ? '' : 'none';
-    }, this);
+    }
   }
 }

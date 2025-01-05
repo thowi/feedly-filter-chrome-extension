@@ -108,11 +108,7 @@ class Filter {
   getPopularityBuckets(allPopularities) {
     var numBuckets = Filter.NUM_POPOLARITY_BUCKETS;
 
-    var unique = [];
-    new Set(allPopularities).forEach(function(value) {
-      unique.push(value);
-    });
-
+    var unique = Array.from(new Set(allPopularities).values());
     var sorted = unique.sort(compareNumerically);
 
     var result = [];
