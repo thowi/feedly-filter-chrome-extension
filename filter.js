@@ -57,7 +57,7 @@ class Filter {
   }
 
   onFeedItemsLoaded(event) {
-    var allPopularities = this.feedly.getPopularities();
+    const allPopularities = this.feedly.getPopularities();
     this.popularities = this.getPopularityBuckets(allPopularities);
     this.filterRows();
     if (this.feedly.shouldLoadMoreItems()) {
@@ -75,10 +75,10 @@ class Filter {
   }
 
   filterRows() {
-    var popularityBucketIndex = Math.round(
+    const popularityBucketIndex = Math.round(
       this.model.getPopularityFilter() * Filter.NUM_POPOLARITY_BUCKETS
     );
-    var threshold = this.popularities[popularityBucketIndex] || 0;
+    const threshold = this.popularities[popularityBucketIndex] || 0;
     this.feedly.filterRows(threshold);
     if (this.feedly.shouldLoadMoreItems()) {
       this.maybeSaveScrollPos();
@@ -106,15 +106,15 @@ class Filter {
    * guaranteed to be included. The values in between are sampled.
    */
   getPopularityBuckets(allPopularities) {
-    var numBuckets = Filter.NUM_POPOLARITY_BUCKETS;
+    const numBuckets = Filter.NUM_POPOLARITY_BUCKETS;
 
-    var unique = Array.from(new Set(allPopularities).values());
-    var sorted = unique.sort(compareNumerically);
+    const unique = Array.from(new Set(allPopularities).values());
+    const sorted = unique.sort(compareNumerically);
 
-    var result = [];
+    const result = [];
     result.push(sorted[0]);
     for (var i = 1; i < numBuckets - 1; i++) {
-      var sampledIndex = Math.round(
+      const sampledIndex = Math.round(
         (i / (numBuckets - 2)) * (sorted.length - 2)
       );
       result.push(sorted[sampledIndex]);

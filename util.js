@@ -1,4 +1,4 @@
-var ENABLE_LOGGING = true;
+const ENABLE_LOGGING = true;
 
 
 function compareNumerically(a, b) {
@@ -7,7 +7,7 @@ function compareNumerically(a, b) {
 
 
 function waitUntil(closure, callback, description = '(anonymous wait)', timeOutMillis = Number.MAX_VALUE) {
-  var result = closure();
+  const result = closure();
   if (result) {
     callback(result);
   } else if (timeOutMillis >= 0) {
@@ -27,7 +27,7 @@ function findElementWithText(nodeList, text) {
 
 
 function log(message) {
-  var args = Array.from(arguments);
+  const args = Array.from(arguments);
   args.unshift('Feedly Filter:');
 	ENABLE_LOGGING && console.log.apply(console.log, args);
 }

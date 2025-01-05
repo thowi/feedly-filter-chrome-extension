@@ -46,13 +46,13 @@ class Feedly extends EventTargetImpl {
   }
 
   getPopularityForRow(row) {
-    var engagementSpan = row.querySelector('span.EntryEngagement');
+    const engagementSpan = row.querySelector('span.EntryEngagement');
     return engagementSpan &&
       parseEngagementCountString(engagementSpan.textContent) || 0;
   }
 
   getPopularities() {
-    var popularities = this.getItemRows().map(this.getPopularityForRow);
+    const popularities = this.getItemRows().map(this.getPopularityForRow);
     if (popularities.length > 1 && popularities.filter(x => x != 0).length == 0) {
       log('Warning: No popularities found. Possibly the DOM query is wrong.');
     }
@@ -60,14 +60,14 @@ class Feedly extends EventTargetImpl {
   }
 
   isFeedFullyLoaded() {
-    var container = this.getItemContainer();
+    const container = this.getItemContainer();
     return container && (
       !!findElementWithText(container.querySelector('h2'), 'All done!')
       || !!findElementWithText(container.querySelector('h2'), 'End of feed'));
   }
 
   doesContainerHaveEnoughItems() {
-    var container = this.getItemContainer();
+    const container = this.getItemContainer();
     return container &&
       container.getBoundingClientRect().bottom > window.innerHeight;
   }
@@ -94,7 +94,7 @@ class Feedly extends EventTargetImpl {
 
       // Listen for more items to be loaded inside the container.
       // The MutationObserver is fired many times, so we throttle the callback.
-      var throttle = new Throttle();
+      const throttle = new Throttle();
       const observer = new MutationObserver(mutationList => {
         for (const mutation of mutationList) {
           if (Array.from(mutation.addedNodes).find(e => e.nodeName == 'ARTICLE')) {
@@ -112,7 +112,7 @@ class Feedly extends EventTargetImpl {
 
   filterRows(threshold) {
     for (const row of this.getItemRows()) {
-      var popularity = this.getPopularityForRow(row);
+      const popularity = this.getPopularityForRow(row);
       row.style.display = popularity >= threshold ? '' : 'none';
     }
   }
