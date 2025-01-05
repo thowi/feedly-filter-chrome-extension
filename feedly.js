@@ -12,8 +12,8 @@ class Feedly extends EventTargetImpl {
     this.lastUrl = null;
 
     // Wait until the main container is loaded and a new URL is detected.
-    waitUntil(() => this.getMainContainer(), (mainContainer) => {
-      const observer = new MutationObserver((mutationList) => {
+    waitUntil(() => this.getMainContainer(), mainContainer => {
+      const observer = new MutationObserver(mutationList => {
         for (const mutation of mutationList) {
           if (!this.getLoadingMessage() && location.href != this.lastUrl) {
             this.lastUrl = location.href;
@@ -88,7 +88,7 @@ class Feedly extends EventTargetImpl {
     this.dispatchEvent(new Event(Feedly.EventType.FEED_CHANGED));
 
     // Wait until the container and items are loaded.
-    waitUntil(() => this.getItemContainer(), (itemContainer) => {
+    waitUntil(() => this.getItemContainer(), itemContainer => {
       log('Feed item container loaded.');
       this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
 
