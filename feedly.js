@@ -11,8 +11,8 @@ class Feedly extends EventTargetImpl {
     super();
     this.lastUrl = null;
 
+    // Wait until the main container is loaded and a new URL is detected.
     waitUntil(this.getMainContainer.bind(this), function(mainContainer) {
-      // Use the loading message to detect a change of the selected feed.
       const observer = new MutationObserver(mutationList => {
         for (const mutation of mutationList) {
           if (!this.getLoadingMessage() && location.href != this.lastUrl) {
@@ -38,13 +38,11 @@ class Feedly extends EventTargetImpl {
   }
 
   getItemContainer() {
-    return document.querySelector('.list-entries');
+    return document.querySelector('main .StreamPage');
   }
 
   getItemRows() {
-    return Array.prototype.slice.call(
-      document.querySelectorAll('.list-entries .entry')
-    );
+    return Array.from(document.querySelectorAll('main .StreamPage article'));
   }
 
   getPopularityForRow(row) {
@@ -63,7 +61,9 @@ class Feedly extends EventTargetImpl {
 
   isFeedFullyLoaded() {
     var container = this.getItemContainer();
-    return container && !!container.querySelector('h4');
+    return container && (
+      !!findElementWithText(container.querySelector('h2'), 'All done!')
+      || !!findElementWithText(container.querySelector('h2'), 'End of feed'));
   }
 
   doesContainerHaveEnoughItems() {
@@ -86,19 +86,26 @@ class Feedly extends EventTargetImpl {
     // Notify listeners.
     log('Feed changed.');
     this.dispatchEvent(new Event(Feedly.EventType.FEED_CHANGED));
-    // Wait until the items are loaded.
+
+    // Wait until the container and items are loaded.
     waitUntil(this.getItemContainer.bind(this), function(itemContainer) {
-      log('Feed items loaded.');
+      log('Feed item container loaded.');
       this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
-      // Listen for more items to be loaded.
+
+      // Listen for more items to be loaded inside the container.
       // The MutationObserver is fired many times, so we throttle the callback.
       var throttle = new Throttle();
-      const observer = new MutationObserver(function() {
-        throttle.fire(function() {
-          log('Feed items loaded');
-          this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
-        }.bind(this));
-      }.bind(this));
+      const observer = new MutationObserver(mutationList => {
+        for (const mutation of mutationList) {
+          if (Array.from(mutation.addedNodes).find(e => e.nodeName == 'ARTICLE')) {
+            // New articles added.
+            throttle.fire(function() {
+              log('More feed items loaded');
+              this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
+            }.bind(this));
+          }
+        }
+      });
       observer.observe(itemContainer, { childList: true, subtree: true });
     }.bind(this), 'getItemContainer', 5000);
   }

@@ -16,7 +16,13 @@ function waitUntil(closure, callback, description = '(anonymous wait)', timeOutM
         100);
   } else {
     log('Timeout for ' + description);
+    throw new Error('Timeout for ' + description);
   }
+}
+
+
+function findElementWithText(nodeList, text) {
+  return Array.from(nodeList).find(child => child.textContent == text);
 }
 
 
