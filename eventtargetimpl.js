@@ -1,23 +1,23 @@
 /**
  * A very incomplete EventTarget implementation.
  */
-function EventTargetImpl() {
-  this.listeners = {};
+class EventTargetImpl {
+  constructor() {
+    this.listeners = {};
+  }
+
+  addEventListener(type, listener) {
+    if (!this.listeners[type]) {
+      this.listeners[type] = [];
+    }
+    this.listeners[type].push(listener);
+  }
+
+  dispatchEvent(event) {
+    if (this.listeners[event.type]) {
+      for (const listener of this.listeners[event.type]) {
+        listener(event);
+      }
+    }
+  }
 }
-
-
-EventTargetImpl.prototype.addEventListener = function(type, listener) {
-  if (!this.listeners[type]) {
-    this.listeners[type] = [];
-  }
-  this.listeners[type].push(listener);
-};
-
-
-EventTargetImpl.prototype.dispatchEvent = function(event) {
-  if (this.listeners[event.type]) {
-    this.listeners[event.type].forEach(function(listener) {
-      listener(event);
-    }, this);
-  }
-};
