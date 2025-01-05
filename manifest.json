@@ -1,9 +1,10 @@
 {
+  "manifest_version": 3,
   "name": "Feedly Filter",
-  "version": "1.0.9",
-  "manifest_version": 2,
+  "version": "1.1.0",
   "description": "Filter articles in Feedly by popularity.",
-  "permissions": [
+  "author": "thomas@wittek.me",
+  "host_permissions": [
     "http://feedly.com/",
     "http://*.feedly.com/",
     "https://feedly.com/",
