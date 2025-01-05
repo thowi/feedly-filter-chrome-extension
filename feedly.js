@@ -77,6 +77,8 @@ class Feedly extends EventTargetImpl {
   }
 
   loadMoreItems() {
+    // TODO: This often doesn't work when the filtered item list is shorter than the screen. Try
+    // to "unfilter" the items, then scroll, then filter again.
     log('Trying to load more...');
     document.documentElement.scrollTop = 0;
     document.documentElement.scrollTop = 1000000;
