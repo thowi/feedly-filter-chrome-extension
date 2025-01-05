@@ -6,16 +6,7 @@ function compareNumerically(a, b) {
 }
 
 
-function waitUntil(closure, callback) {
-  waitUntil(closure, callback, Number.MAX_VALUE);
-}
-
-
-function waitUntil(closure, callback, timeOutMillis) {
-  waitUntil(closure, callback, '(anonymous wait)', timeOutMillis);
-}
-
-function waitUntil(closure, callback, description, timeOutMillis) {
+function waitUntil(closure, callback, description = '(anonymous wait)', timeOutMillis = Number.MAX_VALUE) {
   var result = closure();
   if (result) {
     callback(result);
