@@ -13,12 +13,15 @@ class Feedly extends EventTargetImpl {
 
     waitUntil(this.getMainContainer.bind(this), function(mainContainer) {
       // Use the loading message to detect a change of the selected feed.
-      mainContainer.addEventListener('DOMSubtreeModified', function() {
-        if (!this.getLoadingMessage() && location.href != this.lastUrl) {
-          this.lastUrl = location.href;
-          this.onFeedChanged();
+      const observer = new MutationObserver(mutationList => {
+        for (const mutation of mutationList) {
+          if (!this.getLoadingMessage() && location.href != this.lastUrl) {
+            this.lastUrl = location.href;
+            this.onFeedChanged();
+          }
         }
-      }.bind(this));
+      });
+      observer.observe(mainContainer, { childList: true, subtree: true });
     }.bind(this), 'getMainContainer', 10000);
   }
 
@@ -88,14 +91,15 @@ class Feedly extends EventTargetImpl {
       log('Feed items loaded.');
       this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
       // Listen for more items to be loaded.
-      // The DOMSubtreeModified is fired many times, so we throttle the callback.
+      // The MutationObserver is fired many times, so we throttle the callback.
       var throttle = new Throttle();
-      itemContainer.addEventListener('DOMSubtreeModified', function() {
+      const observer = new MutationObserver(function() {
         throttle.fire(function() {
           log('Feed items loaded');
           this.dispatchEvent(new Event(Feedly.EventType.FEED_ITEMS_LOADED));
         }.bind(this));
       }.bind(this));
+      observer.observe(itemContainer, { childList: true, subtree: true });
     }.bind(this), 'getItemContainer', 5000);
   }
 
